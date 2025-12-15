@@ -1,0 +1,634 @@
+/* =============== RESET E CONFIGURAÇÕES GERAIS =============== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0c2e1d 0%, #1a472a 100%);
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Efeito de brilho de fundo */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(220, 20, 60, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+/* =============== CABEÇALHO =============== */
+.header {
+    text-align: center;
+    padding: 30px 20px;
+    animation: fadeIn 1.5s ease-out;
+}
+
+.header h1 {
+    font-family: 'Mountains of Christmas', cursive;
+    font-size: 3.5rem;
+    color: #FFD700;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+}
+
+.header .subtitle {
+    font-size: 1.2rem;
+    color: #E8F4EA;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* =============== CONTAINER DOS CANVASES =============== */
+.canvas-container {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    margin: 30px auto;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    background: rgba(10, 40, 20, 0.3);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+#snowCanvas, #treeCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+#snowCanvas {
+    z-index: 1;
+}
+
+#treeCanvas {
+    z-index: 2;
+}
+
+/* =============== LUZES DE NATAL =============== */
+.luzes-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.luz-natal {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    filter: drop-shadow(0 0 8px currentColor);
+    animation: piscar 1.5s infinite alternate;
+}
+
+@keyframes piscar {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Cores das luzes */
+.luz-vermelha { 
+    color: #FF0000; 
+    animation-delay: 0s;
+    animation-duration: 1.2s;
+}
+.luz-verde { 
+    color: #00FF00; 
+    animation-delay: 0.3s;
+    animation-duration: 1.5s;
+}
+.luz-branca { 
+    color: #FFFFFF; 
+    animation-delay: 0.6s;
+    animation-duration: 1.8s;
+}
+.luz-dourada { 
+    color: #FFD700; 
+    animation-delay: 0.9s;
+    animation-duration: 1.4s;
+}
+.luz-azul { 
+    color: #00CED1; 
+    animation-delay: 1.2s;
+    animation-duration: 1.6s;
+}
+.luz-rosa { 
+    color: #FF69B4; 
+    animation-delay: 1.5s;
+    animation-duration: 1.3s;
+}
+
+/* =============== CONTROLES =============== */
+.controls {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    z-index: 4;
+}
+
+.btn {
+    padding: 12px 25px;
+    background: linear-gradient(135deg, #C41E3A 0%, #8B0000 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 5px 15px rgba(196, 30, 58, 0.4);
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(196, 30, 58, 0.6);
+    background: linear-gradient(135deg, #8B0000 0%, #C41E3A 100%);
+}
+
+.btn.surprise {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    color: #0c2e1d;
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+}
+
+.btn.surprise:hover {
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.6);
+    background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%);
+}
+
+.btn i {
+    font-size: 1.2rem;
+}
+
+/* =============== MENSAGENS =============== */
+.messages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin: 40px 0;
+}
+
+.message-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.message-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.message-card h3 {
+    color: #FFD700;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.message-card p {
+    line-height: 1.6;
+    color: #E8F4EA;
+    font-size: 1.1rem;
+}
+
+/* =============== CONTADOR REGRESSIVO =============== */
+.countdown {
+    grid-column: 1 / -1;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    border: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.countdown h3 {
+    color: #FFD700;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+}
+
+.countdown-timer {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.time-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.time-unit span {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #FFD700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    font-family: 'Mountains of Christmas', cursive;
+    min-width: 100px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 215, 0, 0.2);
+}
+
+.time-unit small {
+    margin-top: 10px;
+    color: #E8F4EA;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* =============== PLAYER DE MÚSICA =============== */
+.music-player {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.music-btn {
+    padding: 15px 40px;
+    background: linear-gradient(135deg, #228B22 0%, #006400 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 5px 15px rgba(34, 139, 34, 0.4);
+}
+
+.music-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(34, 139, 34, 0.6);
+}
+
+/* =============== RODAPÉ =============== */
+.footer {
+    text-align: center;
+    padding: 40px 20px 20px;
+    margin-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer p {
+    margin: 10px 0;
+    color: #E8F4EA;
+    font-size: 1.1rem;
+}
+
+.signature {
+    font-family: 'Mountains of Christmas', cursive;
+    font-size: 1.5rem !important;
+    color: #FFD700 !important;
+    margin-top: 20px !important;
+}
+
+.heart-beat {
+    color: #ff4757;
+    animation: heartbeat 1.5s infinite;
+}
+
+/* =============== EASTER EGG PARA DEVS =============== */
+.easter-egg {
+    margin-top: 30px;
+}
+
+.dev-btn {
+    background: transparent;
+    border: 2px solid #00CED1;
+    color: #00CED1;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: monospace;
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+.dev-btn:hover {
+    background: rgba(0, 206, 209, 0.1);
+    transform: scale(1.05);
+}
+
+#codeOutput {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: left;
+    font-size: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    border-left: 4px solid #00CED1;
+    font-family: 'Courier New', monospace;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Cores para código */
+.keyword { color: #569CD6; }
+.function { color: #DCDCAA; }
+.string { color: #CE9178; }
+.number { color: #B5CEA8; }
+.comment { color: #6A9955; }
+.constant { color: #4FC1FF; }
+
+/* =============== BOTÃO FOTO ESPECIAL =============== */
+.foto-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #FF69B4, #C71585);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(255, 105, 180, 0.5);
+    z-index: 100;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.foto-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(255, 105, 180, 0.7);
+}
+
+/* =============== POPUP FOTO ESPECIAL =============== */
+.foto-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: aparecerFoto 0.3s ease-out;
+}
+
+.foto-content {
+    position: relative;
+    background: linear-gradient(135deg, #0c2e1d, #1a472a);
+    padding: 40px;
+    border-radius: 20px;
+    border: 4px solid #FFD700;
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.7);
+    text-align: center;
+    max-width: 500px;
+    animation: zoomIn 0.3s ease-out;
+}
+
+.fechar-popup-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #FFD700;
+    color: #FFD700;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.fechar-popup-btn:hover {
+    background: rgba(255, 215, 0, 0.2);
+    transform: rotate(90deg);
+}
+
+.foto-content h2 {
+    color: #FFD700;
+    margin-bottom: 25px;
+    font-size: 2rem;
+    padding-right: 40px;
+}
+
+#fotoImagem {
+    width: 300px;
+    height: 300px;
+    border-radius: 15px;
+    border: 3px solid gold;
+    margin: 20px 0;
+    object-fit: cover;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+}
+
+.foto-content p {
+    color: white;
+    line-height: 1.6;
+    margin: 25px 0;
+    font-size: 1.2rem;
+}
+
+.btn-fechar {
+    padding: 15px 40px;
+    background: #C41E3A;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-fechar:hover {
+    background: #8B0000;
+    transform: scale(1.05);
+}
+
+/* =============== ANIMAÇÕES =============== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes aparecerFoto {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes zoomOut {
+    from { transform: scale(1); opacity: 1; }
+    to { transform: scale(0.8); opacity: 0; }
+}
+
+/* =============== RESPONSIVIDADE =============== */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2.5rem;
+    }
+    
+    .canvas-container {
+        height: 400px;
+    }
+    
+    .controls {
+        flex-direction: column;
+        align-items: center;
+        padding: 0 20px;
+    }
+    
+    .btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+    
+    .countdown-timer {
+        gap: 15px;
+    }
+    
+    .time-unit span {
+        font-size: 2.5rem;
+        min-width: 80px;
+        padding: 10px;
+    }
+    
+    .messages {
+        grid-template-columns: 1fr;
+    }
+    
+    .foto-content {
+        max-width: 90%;
+        padding: 20px;
+        margin: 20px;
+    }
+    
+    #fotoImagem {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .foto-btn {
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 2rem;
+    }
+    
+    .canvas-container {
+        height: 350px;
+    }
+    
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .time-unit span {
+        font-size: 2rem;
+        min-width: 70px;
+        padding: 8px;
+    }
+    
+    .foto-content h2 {
+        font-size: 1.5rem;
+    }
+    
+    #fotoImagem {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .foto-content p {
+        font-size: 1rem;
+    }
+}
