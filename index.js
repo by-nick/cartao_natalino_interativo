@@ -206,7 +206,6 @@ function initSnowCanvas() {
         }
     };
 }
-
 // =============== LUZES DE NATAL ===============
 function initLuzes() {
     const container = document.getElementById('luzesContainer');
@@ -374,6 +373,27 @@ function initTreeCanvas() {
     
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
+
+    //BRILHO NA ESTRELA 
+
+    function criarEfeitoBrilhoEstrela() {
+    // Brilho pulsante ao redor da estrela
+    const brilho = document.createElement('div');
+    brilho.className = 'brilho-estrela';
+    brilho.style.cssText = `
+        position: absolute;
+        top: ${starPosition.cy - 50}px;
+        left: ${starPosition.cx - 50}px;
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(circle, rgba(255, 217, 0, 1) 0%, transparent 50%);
+        border-radius: 50%;
+        animation: pulsar 3s infinite;
+        z-index: 3;
+        pointer-events: none;
+    `;
+    document.querySelector('.canvas-container').appendChild(brilho);
+}
     
     // Função para desenhar estrela
     function drawStar(ctx, cx, cy, size) {
@@ -403,6 +423,8 @@ function initTreeCanvas() {
         
         ctx.lineTo(cx, cy - outerRadius);
         ctx.closePath();
+
+        
         
         // Gradiente para a estrela
         const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, outerRadius * 1.5);
@@ -437,6 +459,7 @@ function initTreeCanvas() {
         
         console.log(`⭐ Estrela desenhada em: x=${cx}, y=${cy} (POSIÇÃO ALTA)`);
     }
+    
     
     // Função principal para desenhar a árvore
     window.drawTree = function() {
