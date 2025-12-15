@@ -1,2 +1,20 @@
-# cartao_natalino_interativo
-Cartão de natal interativo feito com JS, CSS e HTML
+# 🎄 Cartão de Natal Interativo
+
+Um cartão de natal digital interativo feito com HTML, CSS e JavaScript para presentear alguém especial!
+
+## ✨ Funcionalidades
+
+- 🌲 Árvore de Natal interativa com luzes piscantes
+- ❄️ Animação de neve
+- 🎁 Adicione enfeites clicando na árvore
+- 🎵 Música de natal com controle
+- 📸 Foto especial com popup
+- ⏱️ Contador regressivo para o natal
+- 💡 Troca de cores das luzes
+- 🎯 Surpresas e mensagens secretas
+
+## 🚀 Como usar
+
+1. Clone o repositório:
+```bash
+git clone https://github.com/seu-usuario/cartao-natal-interativo.git
