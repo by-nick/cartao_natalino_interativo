@@ -23,8 +23,8 @@ body::before {
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(220, 20, 60, 0.1) 0%, transparent 50%);
+        radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(220, 20, 60, 0.15) 0%, transparent 50%);
     pointer-events: none;
     z-index: -1;
 }
@@ -100,6 +100,7 @@ body::before {
     height: 100%;
     pointer-events: none;
     z-index: 3;
+    overflow: visible;
 }
 
 .luz-natal {
@@ -107,45 +108,60 @@ body::before {
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    filter: drop-shadow(0 0 8px currentColor);
     animation: piscar 1.5s infinite alternate;
+    transform-origin: center;
+    z-index: 3;
 }
 
+/* Animações melhoradas para luzes */
 @keyframes piscar {
-    0%, 100% { opacity: 0.3; transform: scale(0.8); }
-    50% { opacity: 1; transform: scale(1.2); }
+    0% { 
+        opacity: 0.3; 
+        transform: scale(0.8); 
+        filter: brightness(0.7) drop-shadow(0 0 5px currentColor);
+    }
+    50% { 
+        opacity: 1; 
+        transform: scale(1.2); 
+        filter: brightness(1.5) drop-shadow(0 0 15px currentColor);
+    }
+    100% { 
+        opacity: 0.3; 
+        transform: scale(0.8); 
+        filter: brightness(0.7) drop-shadow(0 0 5px currentColor);
+    }
 }
 
-/* Cores das luzes */
-.luz-vermelha { 
-    color: #FF0000; 
-    animation-delay: 0s;
-    animation-duration: 1.2s;
+/* Cores das luzes com propriedades CSS customizadas */
+.luz-natal[data-color="red"] { 
+    background-color: #FF0000; 
+    box-shadow: 0 0 10px #FF0000, 0 0 20px #FF0000;
+    animation-delay: calc(var(--i) * 0.1s);
 }
-.luz-verde { 
-    color: #00FF00; 
-    animation-delay: 0.3s;
-    animation-duration: 1.5s;
+.luz-natal[data-color="green"] { 
+    background-color: #00FF00; 
+    box-shadow: 0 0 10px #00FF00, 0 0 20px #00FF00;
+    animation-delay: calc(var(--i) * 0.1s);
 }
-.luz-branca { 
-    color: #FFFFFF; 
-    animation-delay: 0.6s;
-    animation-duration: 1.8s;
+.luz-natal[data-color="white"] { 
+    background-color: #FFFFFF; 
+    box-shadow: 0 0 10px #FFFFFF, 0 0 20px #FFFFFF;
+    animation-delay: calc(var(--i) * 0.1s);
 }
-.luz-dourada { 
-    color: #FFD700; 
-    animation-delay: 0.9s;
-    animation-duration: 1.4s;
+.luz-natal[data-color="gold"] { 
+    background-color: #FFD700; 
+    box-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700;
+    animation-delay: calc(var(--i) * 0.1s);
 }
-.luz-azul { 
-    color: #00CED1; 
-    animation-delay: 1.2s;
-    animation-duration: 1.6s;
+.luz-natal[data-color="blue"] { 
+    background-color: #00CED1; 
+    box-shadow: 0 0 10px #00CED1, 0 0 20px #00CED1;
+    animation-delay: calc(var(--i) * 0.1s);
 }
-.luz-rosa { 
-    color: #FF69B4; 
-    animation-delay: 1.5s;
-    animation-duration: 1.3s;
+.luz-natal[data-color="pink"] { 
+    background-color: #FF69B4; 
+    box-shadow: 0 0 10px #FF69B4, 0 0 20px #FF69B4;
+    animation-delay: calc(var(--i) * 0.1s);
 }
 
 /* =============== CONTROLES =============== */
@@ -158,6 +174,7 @@ body::before {
     justify-content: center;
     gap: 15px;
     z-index: 4;
+    padding: 0 20px;
 }
 
 .btn {
@@ -175,6 +192,7 @@ body::before {
     align-items: center;
     gap: 10px;
     box-shadow: 0 5px 15px rgba(196, 30, 58, 0.4);
+    white-space: nowrap;
 }
 
 .btn:hover {
@@ -372,6 +390,7 @@ body::before {
     margin: 0 auto;
     border-left: 4px solid #00CED1;
     font-family: 'Courier New', monospace;
+    overflow-x: auto;
 }
 
 .hidden {
@@ -423,7 +442,14 @@ body::before {
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    animation: aparecerFoto 0.3s ease-out;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.foto-popup:not(.hidden) {
+    opacity: 1;
+    visibility: visible;
 }
 
 .foto-content {
@@ -435,7 +461,12 @@ body::before {
     box-shadow: 0 0 50px rgba(255, 215, 0, 0.7);
     text-align: center;
     max-width: 500px;
-    animation: zoomIn 0.3s ease-out;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.foto-popup:not(.hidden) .foto-content {
+    transform: scale(1);
 }
 
 .fechar-popup-btn {
@@ -529,21 +560,6 @@ body::before {
     to { transform: translateX(100%); opacity: 0; }
 }
 
-@keyframes aparecerFoto {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes zoomIn {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-
-@keyframes zoomOut {
-    from { transform: scale(1); opacity: 1; }
-    to { transform: scale(0.8); opacity: 0; }
-}
-
 /* =============== RESPONSIVIDADE =============== */
 @media (max-width: 768px) {
     .header h1 {
@@ -557,7 +573,6 @@ body::before {
     .controls {
         flex-direction: column;
         align-items: center;
-        padding: 0 20px;
     }
     
     .btn {
@@ -631,4 +646,19 @@ body::before {
     .foto-content p {
         font-size: 1rem;
     }
+}
+
+/* Mensagem temporária */
+#msgTemp {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #FFD700;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 2px solid #FFD700;
+    z-index: 1000;
+    font-weight: bold;
+    animation: slideIn 0.3s ease-out, slideOut 0.3s ease-out 1.7s;
 }

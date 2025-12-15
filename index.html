@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎄</text></svg>">
 </head>
 <body>
     <div class="container">
@@ -130,9 +131,12 @@
             <h2>📸 Nossa Foto Especial! ❤️</h2>
             <img src="itens_importantes/nossa-foto.jpg" alt="Nossa foto" id="fotoImagem">
             <p>Para o amor da minha vida!<br>Cada momento com você é especial.<br>Te amo mais que tudo! 🥰</p>
-            <button onclick="fecharFoto()" class="btn-fechar">Fechar ❤️</button>
+            <button id="closePhotoBtn" class="btn-fechar">Fechar ❤️</button>
         </div>
     </div>
+
+    <!-- Áudio para efeitos sonoros -->
+    <audio id="ornamentSound" src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA=="></audio>
 
     <script src="index.js"></script>
 </body>
