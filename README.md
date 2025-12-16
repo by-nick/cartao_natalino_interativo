@@ -15,6 +15,4 @@ Um cartão de natal digital interativo feito com HTML, CSS e JavaScript para pre
 
 ## 🚀 Como usar
 
-1. Clone o repositório:
-```bash
-git clone https://github.com/seu-usuario/cartao-natal-interativo.git
+https://presente-de-natal-para-meu-amorzinh.vercel.app
