@@ -32,6 +32,39 @@ let starClicked = false;
 let animationId = null;
 let starPosition = null;
 
+// Variáveis para Álbum de Fotos - AGORA COM 4 FOTOS
+let fotoAtualIndex = 0;
+const fotosAlbum = [
+    {
+        src: 'itens_importantes/nossa-foto.jpg',
+        descricao: 'Você me apoia sempre que pode, cada momento desses, me faz te amar ainda mais ❤️',
+        legenda: 'Cada momento com você é especial. Te amo mais que tudo! 🥰'
+    },
+    {
+        src: 'itens_importantes/foto2.jpeg',
+        descricao: 'Ás vezes eu olho nós dois juntos e entendo porque as pessoas diziam que ficariamos juntos! 😄',
+        legenda: 'Seu sorriso é o que mais amo neste mundo! 💖'
+    },
+    {
+        src: 'itens_importantes/foto3.jpeg',
+        descricao: 'Nosso amor cheio de cumplicidade e carinho! 👫',
+        legenda: 'Você é meu porto seguro e minha maior alegria! 🌟'
+    },
+    {
+        src: 'itens_importantes/foto4.jpeg',
+        descricao: 'Mais um momento especial do nosso amor! 💕',
+        legenda: 'Cada instante ao seu lado é mágico e inesquecível! ✨'
+    }
+];
+
+// Variáveis para Jogos
+let presentesEncontrados = 0;
+let jogoAtivo = false;
+let cartasMemoria = [];
+let cartaVirada = null;
+let paresEncontrados = 0;
+let pontosMemoria = 0;
+
 // =============== INICIALIZAÇÃO ===============
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🎄 Cartão de Natal carregando...');
@@ -41,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initSnowCanvas();
     initTreeCanvas();
     setupEventListeners();
+    iniciarJogos();
     startCountdown();
     animate();
     
@@ -54,27 +88,30 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('✅ Cartão de Natal carregado! Feliz Natal! ❤️');
         console.log('💡 Luzes criadas:', document.querySelectorAll('.luz-natal').length);
         console.log('❄️ Flocos de neve:', snowflakes.length);
+        console.log('📸 Álbum com fotos:', fotosAlbum.length);
     }, 1000);
 });
 
-// =============== SISTEMA DE FOTO ESPECIAL ===============
+// =============== SISTEMA DE ÁLBUM DE FOTOS ===============
 function initFotoSistema() {
     const fotoBtn = document.getElementById('fotoBtn');
     const fotoPopup = document.getElementById('fotoPopup');
     const fecharPopupBtn = document.querySelector('.fechar-popup-btn');
     const closePhotoBtn = document.getElementById('closePhotoBtn');
+    const prevFotoBtn = document.getElementById('prevFoto');
+    const nextFotoBtn = document.getElementById('nextFoto');
     
     if (!fotoBtn || !fotoPopup) {
-        console.error('❌ Elementos da foto não encontrados!');
+        console.error('❌ Elementos do álbum não encontrados!');
         return;
     }
     
-    // Abrir popup da foto
+    // Abrir popup do álbum
     fotoBtn.addEventListener('click', function() {
-        console.log('📸 Abrindo foto especial...');
+        console.log('📸 Abrindo álbum de fotos...');
         fotoPopup.classList.remove('hidden');
-        createConfetti();
         playPhotoSound();
+        atualizarAlbum();
         
         // Efeito no botão
         this.style.transform = 'scale(0.9)';
@@ -86,9 +123,32 @@ function initFotoSistema() {
         }, 300);
         
         setTimeout(() => {
-            this.innerHTML = '<i class="fas fa-camera"></i> Nossa Foto Especial';
+            this.innerHTML = '<i class="fas fa-camera"></i> Nosso Álbum';
             this.style.background = 'linear-gradient(135deg, #FF69B4, #C71585)';
         }, 3000);
+    });
+    
+    // Navegação do álbum
+    if (prevFotoBtn) {
+        prevFotoBtn.addEventListener('click', function() {
+            fotoAtualIndex = (fotoAtualIndex - 1 + fotosAlbum.length) % fotosAlbum.length;
+            atualizarAlbum();
+        });
+    }
+    
+    if (nextFotoBtn) {
+        nextFotoBtn.addEventListener('click', function() {
+            fotoAtualIndex = (fotoAtualIndex + 1) % fotosAlbum.length;
+            atualizarAlbum();
+        });
+    }
+    
+    // Miniaturas
+    document.querySelectorAll('.miniatura').forEach((miniatura, index) => {
+        miniatura.addEventListener('click', function() {
+            fotoAtualIndex = parseInt(this.getAttribute('data-index'));
+            atualizarAlbum();
+        });
     });
     
     // Fechar com botão X (no canto)
@@ -120,12 +180,65 @@ function initFotoSistema() {
             fecharFoto();
         }
     });
+    
+    // Navegação por teclado
+    document.addEventListener('keydown', function(e) {
+        if (!fotoPopup.classList.contains('hidden')) {
+            if (e.key === 'ArrowLeft') {
+                fotoAtualIndex = (fotoAtualIndex - 1 + fotosAlbum.length) % fotosAlbum.length;
+                atualizarAlbum();
+            } else if (e.key === 'ArrowRight') {
+                fotoAtualIndex = (fotoAtualIndex + 1) % fotosAlbum.length;
+                atualizarAlbum();
+            }
+        }
+    });
+}
+
+function atualizarAlbum() {
+    const fotoAtual = fotosAlbum[fotoAtualIndex];
+    
+    // Atualizar imagem
+    const fotoImagem = document.getElementById('fotoImagem');
+    if (fotoImagem) {
+        fotoImagem.src = fotoAtual.src;
+        fotoImagem.alt = fotoAtual.descricao;
+    }
+    
+    // Atualizar descrição
+    const descricaoFoto = document.getElementById('descricaoFoto');
+    if (descricaoFoto) {
+        descricaoFoto.textContent = fotoAtual.descricao;
+    }
+    
+    // Atualizar legenda
+    const legendaFoto = document.getElementById('legendaFoto');
+    if (legendaFoto) {
+        legendaFoto.textContent = fotoAtual.legenda;
+    }
+    
+    // Atualizar contador
+    const fotoAtualElement = document.getElementById('fotoAtual');
+    const totalFotosElement = document.getElementById('totalFotos');
+    if (fotoAtualElement) fotoAtualElement.textContent = fotoAtualIndex + 1;
+    if (totalFotosElement) totalFotosElement.textContent = fotosAlbum.length;
+    
+    // Atualizar miniaturas ativas
+    document.querySelectorAll('.miniatura').forEach((miniatura, index) => {
+        if (index === fotoAtualIndex) {
+            miniatura.classList.add('active');
+        } else {
+            miniatura.classList.remove('active');
+        }
+    });
+    
+    console.log(`📸 Foto ${fotoAtualIndex + 1}/${fotosAlbum.length} exibida`);
 }
 
 function fecharFoto() {
     const fotoPopup = document.getElementById('fotoPopup');
     if (fotoPopup) {
-        console.log('📸 Fechando foto especial...');
+        console.log('📸 Fechando álbum de fotos...');
         fotoPopup.classList.add('hidden');
     }
 }
@@ -150,6 +263,210 @@ function playPhotoSound() {
         oscillator.stop(audioContext.currentTime + 0.5);
     } catch (e) {
         console.log('🔇 Áudio da foto não disponível');
+    }
+}
+
+// =============== JOGOS INTERATIVOS ===============
+function iniciarJogos() {
+    // Jogo 1: Encontrar Presentes
+    const iniciarJogoPresentesBtn = document.getElementById('iniciarJogoPresentes');
+    if (iniciarJogoPresentesBtn) {
+        iniciarJogoPresentesBtn.addEventListener('click', iniciarJogoPresentes);
+    }
+    
+    // Jogo 2: Memória
+    const iniciarJogoMemoriaBtn = document.getElementById('iniciarJogoMemoria');
+    if (iniciarJogoMemoriaBtn) {
+        iniciarJogoMemoriaBtn.addEventListener('click', iniciarJogoMemoria);
+    }
+    
+    // Iniciar jogo de memória automaticamente
+    setTimeout(() => {
+        iniciarJogoMemoria();
+    }, 2000);
+}
+
+// Jogo 1: Encontrar Presentes
+function iniciarJogoPresentes() {
+    if (jogoAtivo) return;
+    
+    jogoAtivo = true;
+    presentesEncontrados = 0;
+    atualizarContadorPresentes();
+    
+    const areaJogo = document.getElementById('areaJogo');
+    if (!areaJogo) return;
+    
+    areaJogo.innerHTML = '';
+    areaJogo.style.minHeight = '200px';
+    
+    // Criar 3 presentes escondidos
+    const presentes = [
+        { emoji: '🎁', mensagem: 'Encontrou um presente especial! Você ganhou 10 pontos de amor! 💖' },
+        { emoji: '🍪', mensagem: 'Biscoitos de Natal! Deliciosos e cheios de amor! 🍪' },
+        { emoji: '⭐', mensagem: 'Uma estrela brilhante para iluminar seu Natal! ✨' }
+    ];
+    
+    presentes.forEach((presente, index) => {
+        const elementoPresente = document.createElement('div');
+        elementoPresente.className = 'presente-escondido';
+        elementoPresente.innerHTML = presente.emoji;
+        elementoPresente.style.fontSize = '30px';
+        elementoPresente.style.position = 'absolute';
+        
+        // Posição aleatória
+        const areaWidth = areaJogo.clientWidth - 50;
+        const areaHeight = areaJogo.clientHeight - 50;
+        const x = Math.random() * areaWidth;
+        const y = Math.random() * areaHeight;
+        
+        elementoPresente.style.left = `${x}px`;
+        elementoPresente.style.top = `${y}px`;
+        
+        elementoPresente.addEventListener('click', function() {
+            if (this.classList.contains('encontrado')) return;
+            
+            this.classList.add('encontrado');
+            this.style.transform = 'scale(1.5)';
+            this.style.opacity = '0.7';
+            this.style.cursor = 'default';
+            
+            presentesEncontrados++;
+            atualizarContadorPresentes();
+            
+            // Efeitos
+            createConfetti();
+            mostrarMensagemTemporaria(presente.mensagem);
+            playOrnamentSound();
+            
+            // Verificar se completou o jogo
+            if (presentesEncontrados === presentes.length) {
+                setTimeout(() => {
+                    mostrarMensagemTemporaria('🎉 Parabéns! Você encontrou todos os presentes! 🏆');
+                    jogoAtivo = false;
+                }, 1000);
+            }
+        });
+        
+        areaJogo.appendChild(elementoPresente);
+    });
+    
+    mostrarMensagemTemporaria('🔍 Encontre os 3 presentes escondidos! Clique neles!');
+}
+
+function atualizarContadorPresentes() {
+    const contadorElement = document.getElementById('contadorPresentes');
+    if (contadorElement) {
+        contadorElement.textContent = presentesEncontrados;
+    }
+}
+
+// Jogo 2: Memória Natalina
+function iniciarJogoMemoria() {
+    paresEncontrados = 0;
+    pontosMemoria = 0;
+    cartaVirada = null;
+    
+    atualizarPontosMemoria();
+    
+    const memoriaContainer = document.getElementById('memoriaContainer');
+    if (!memoriaContainer) return;
+    
+    memoriaContainer.innerHTML = '';
+    
+    // Símbolos para o jogo da memória
+    const simbolos = ['🎄', '🎅', '⭐', '🎁', '🔔', '🦌', '❄️', '🍪'];
+    cartasMemoria = [...simbolos, ...simbolos]; // Duplicar para ter pares
+    
+    // Embaralhar cartas
+    cartasMemoria.sort(() => Math.random() - 0.5);
+    
+    // Criar cartas
+    cartasMemoria.forEach((simbolo, index) => {
+        const carta = document.createElement('div');
+        carta.className = 'carta-memoria';
+        carta.dataset.simbolo = simbolo;
+        carta.dataset.index = index;
+        
+        const conteudoFrente = document.createElement('div');
+        conteudoFrente.className = 'carta-conteudo carta-frente';
+        conteudoFrente.innerHTML = '?';
+        conteudoFrente.style.fontSize = '1.8rem';
+        
+        const conteudoVerso = document.createElement('div');
+        conteudoVerso.className = 'carta-conteudo carta-verso';
+        conteudoVerso.innerHTML = simbolo;
+        conteudoVerso.style.fontSize = '2rem';
+        
+        carta.appendChild(conteudoFrente);
+        carta.appendChild(conteudoVerso);
+        
+        carta.addEventListener('click', () => virarCarta(carta));
+        
+        memoriaContainer.appendChild(carta);
+    });
+    
+    mostrarMensagemTemporaria('🧠 Jogo da Memória iniciado! Encontre os pares iguais!');
+}
+
+function virarCarta(carta) {
+    // Se a carta já está virada ou encontrada, não faz nada
+    if (carta.classList.contains('virada') || carta.classList.contains('encontrada')) {
+        return;
+    }
+    
+    // Virar a carta
+    carta.classList.add('virada');
+    
+    // Se não há carta virada, guardar esta
+    if (!cartaVirada) {
+        cartaVirada = carta;
+        return;
+    }
+    
+    // Se há uma carta virada, verificar se são iguais
+    const simbolo1 = cartaVirada.dataset.simbolo;
+    const simbolo2 = carta.dataset.simbolo;
+    
+    // Se forem iguais
+    if (simbolo1 === simbolo2) {
+        carta.classList.add('encontrada');
+        cartaVirada.classList.add('encontrada');
+        
+        pontosMemoria += 20;
+        paresEncontrados++;
+        
+        cartaVirada = null;
+        
+        // Efeitos
+        createConfetti();
+        playOrnamentSound();
+        
+        // Verificar se completou o jogo
+        if (paresEncontrados === cartasMemoria.length / 2) {
+            pontosMemoria += 100; // Bônus por completar
+            setTimeout(() => {
+                mostrarMensagemTemporaria('🎉 Parabéns! Você completou o jogo da memória! 🏆');
+            }, 500);
+        }
+    } else {
+        // Se forem diferentes, desvirar após um tempo
+        pontosMemoria = Math.max(0, pontosMemoria - 5); // Penalidade por erro
+        
+        setTimeout(() => {
+            carta.classList.remove('virada');
+            cartaVirada.classList.remove('virada');
+            cartaVirada = null;
+        }, 1000);
+    }
+    
+    atualizarPontosMemoria();
+}
+
+function atualizarPontosMemoria() {
+    const pontosElement = document.getElementById('pontosMemoria');
+    if (pontosElement) {
+        pontosElement.textContent = pontosMemoria;
     }
 }
 
@@ -206,6 +523,7 @@ function initSnowCanvas() {
         }
     };
 }
+
 // =============== LUZES DE NATAL ===============
 function initLuzes() {
     const container = document.getElementById('luzesContainer');
@@ -297,19 +615,14 @@ function initLuzes() {
         
         container.appendChild(luz);
         luzesCriadas++;
-        
-        // Log para debug
-        if (i % 4 === 0) { // Log a cada 4 luzes
-            console.log(`   Luz ${i} (${Math.round(degrees)}°): x=${Math.round(x)}, y=${Math.round(y)}`);
-        }
     }
     
     // Adicionar 4 luzes extras em pontos críticos para manter formato
     const pontosCriticos = [
-        { angle: 0, name: "Topo" },     // 0° - Topo
-        { angle: 90, name: "Direita" }, // 90° - Direita
-        { angle: 180, name: "Baixo" },  // 180° - Baixo
-        { angle: 270, name: "Esquerda" } // 270° - Esquerda
+        { angle: 0, name: "Topo" },
+        { angle: 90, name: "Direita" },
+        { angle: 180, name: "Baixo" },
+        { angle: 270, name: "Esquerda" }
     ];
     
     pontosCriticos.forEach((ponto, index) => {
@@ -339,288 +652,9 @@ function initLuzes() {
         
         container.appendChild(luzExtra);
         luzesCriadas++;
-        
-        console.log(`   Ponto ${ponto.name} (${ponto.angle}°): x=${Math.round(x)}, y=${Math.round(y)}`);
     });
     
     console.log(`✅ ${luzesCriadas} luzes criadas em CÍRCULO COMPLETO!`);
-    console.log(`✅ Formato mantido com menos luzes`);
-    
-    // Remover o ponto de debug central
-    setTimeout(() => {
-        const centroDebug = container.querySelector('[style*="background-color: #FF0000"]');
-        if (centroDebug) {
-            centroDebug.remove();
-        }
-    }, 3000);
-}
-// =============== ÁRVORE DE NATAL ===============
-function initTreeCanvas() {
-    const canvas = document.getElementById('treeCanvas');
-    if (!canvas) {
-        console.error('❌ Canvas da árvore não encontrado!');
-        return;
-    }
-    
-    const ctx = canvas.getContext('2d');
-    
-    function resizeCanvas() {
-        const container = canvas.parentElement;
-        canvas.width = container.clientWidth;
-        canvas.height = container.clientHeight;
-        if (window.drawTree) window.drawTree();
-    }
-    
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    //BRILHO NA ESTRELA 
-
-    function criarEfeitoBrilhoEstrela() {
-    // Brilho pulsante ao redor da estrela
-    const brilho = document.createElement('div');
-    brilho.className = 'brilho-estrela';
-    brilho.style.cssText = `
-        position: absolute;
-        top: ${starPosition.cy - 50}px;
-        left: ${starPosition.cx - 50}px;
-        width: 100px;
-        height: 100px;
-        background: radial-gradient(circle, rgba(255, 217, 0, 1) 0%, transparent 50%);
-        border-radius: 50%;
-        animation: pulsar 3s infinite;
-        z-index: 3;
-        pointer-events: none;
-    `;
-    document.querySelector('.canvas-container').appendChild(brilho);
-}
-    
-    // Função para desenhar estrela
-    function drawStar(ctx, cx, cy, size) {
-        const spikes = 5;
-        const outerRadius = size;
-        const innerRadius = size * 0.5;
-        let rotation = Math.PI / 2 * 3;
-        let x = cx;
-        let y = cy;
-        const step = Math.PI / spikes;
-        
-        ctx.save();
-        ctx.beginPath();
-        ctx.moveTo(cx, cy - outerRadius);
-        
-        for (let i = 0; i < spikes; i++) {
-            x = cx + Math.cos(rotation) * outerRadius;
-            y = cy + Math.sin(rotation) * outerRadius;
-            ctx.lineTo(x, y);
-            rotation += step;
-            
-            x = cx + Math.cos(rotation) * innerRadius;
-            y = cy + Math.sin(rotation) * innerRadius;
-            ctx.lineTo(x, y);
-            rotation += step;
-        }
-        
-        ctx.lineTo(cx, cy - outerRadius);
-        ctx.closePath();
-
-        
-        
-        // Gradiente para a estrela
-        const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, outerRadius * 1.5);
-        gradient.addColorStop(0, '#FFD700');
-        gradient.addColorStop(0.7, '#FFA500');
-        gradient.addColorStop(1, 'rgba(255, 165, 0, 0.3)');
-        
-        ctx.fillStyle = gradient;
-        ctx.fill();
-        
-        // Brilho intenso
-        ctx.shadowColor = '#FFD700';
-        ctx.shadowBlur = 35;
-        ctx.fill();
-        
-        // Contorno
-        ctx.strokeStyle = '#FFFFFF';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-        
-        ctx.shadowBlur = 0;
-        ctx.restore();
-        
-        // Armazenar posição da estrela MAIS ALTA
-        starPosition = { 
-            cx: cx, 
-            cy: cy, 
-            radius: outerRadius + 15
-        };
-        
-        window.starPosition = starPosition;
-        
-        console.log(`⭐ Estrela desenhada em: x=${cx}, y=${cy} (POSIÇÃO ALTA)`);
-    }
-    
-    
-    // Função principal para desenhar a árvore
-    window.drawTree = function() {
-        if (!canvas || !ctx) return;
-        
-        const centerX = canvas.width * config.tree.x;
-        const baseY = canvas.height * config.tree.y;
-        const treeHeight = Math.min(config.tree.size, canvas.height * 0.5);
-        const treeWidth = treeHeight * 0.6;
-        
-        // Limpar canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Tronco
-        ctx.fillStyle = '#8B4513';
-        ctx.fillRect(centerX - 15, baseY, 30, 50);
-        
-        // Camadas da árvore - REDUZIDA para dar espaço para o círculo
-        const layers = 4;
-        for (let i = 0; i < layers; i++) {
-            const layerHeight = (treeHeight * 0.9) / layers; // Árvore 10% menor
-            const layerY = baseY - (i * layerHeight);
-            const layerWidth = treeWidth * (1 - i * 0.2);
-            
-            ctx.fillStyle = i % 2 === 0 ? '#228B22' : '#006400';
-            ctx.beginPath();
-            ctx.moveTo(centerX, layerY - layerHeight);
-            ctx.lineTo(centerX - layerWidth/2, layerY);
-            ctx.lineTo(centerX + layerWidth/2, layerY);
-            ctx.closePath();
-            ctx.fill();
-            
-            // Efeito de neve nas bordas
-            if (i === 0 || i === 2) {
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-                ctx.lineWidth = 2;
-                ctx.setLineDash([5, 3]);
-                ctx.stroke();
-                ctx.setLineDash([]);
-            }
-        }
-        
-        // Estrela no topo - POSIÇÃO MAIS ALTA para o círculo caber
-        const starY = baseY - treeHeight - 40; // Muito mais alta
-        drawStar(ctx, centerX, starY, 25); // Estrela um pouco menor para caber no círculo
-        
-        // Desenhar enfeites
-        drawOrnaments(ctx);
-        
-        // Desenhar presentes
-        drawPresents(ctx, centerX, baseY + 40);
-    };
-    
-    // Desenhar enfeites
-    function drawOrnaments(ctx) {
-        for (const ornament of ornaments) {
-            ctx.save();
-            
-            ctx.beginPath();
-            ctx.arc(ornament.x, ornament.y, ornament.radius, 0, Math.PI * 2);
-            
-            const gradient = ctx.createRadialGradient(
-                ornament.x - 3, ornament.y - 3, 0,
-                ornament.x, ornament.y, ornament.radius
-            );
-            gradient.addColorStop(0, '#FFFFFF');
-            gradient.addColorStop(1, ornament.color);
-            
-            ctx.fillStyle = gradient;
-            ctx.fill();
-            
-            // Brilho
-            ctx.shadowColor = ornament.color;
-            ctx.shadowBlur = 8;
-            ctx.fill();
-            ctx.shadowBlur = 0;
-            
-            // Gancho no topo
-            ctx.fillStyle = '#FFD700';
-            ctx.fillRect(ornament.x - 2, ornament.y - ornament.radius - 3, 4, 6);
-            
-            ctx.restore();
-        }
-    }
-    
-    // Desenhar presentes
-    function drawPresents(ctx, centerX, baseY) {
-        const presents = [
-            { x: centerX - 60, y: baseY, width: 50, height: 35, color: '#C41E3A', ribbon: '#FFFFFF' },
-            { x: centerX - 5, y: baseY, width: 55, height: 40, color: '#228B22', ribbon: '#FFD700' },
-            { x: centerX + 50, y: baseY, width: 45, height: 50, color: '#1E90FF', ribbon: '#FFFFFF' }
-        ];
-        
-        for (const present of presents) {
-            // Caixa
-            ctx.fillStyle = present.color;
-            ctx.fillRect(present.x, present.y, present.width, present.height);
-            
-            // Fita
-            ctx.fillStyle = present.ribbon;
-            ctx.fillRect(present.x + present.width/2 - 3, present.y, 6, present.height);
-            ctx.fillRect(present.x, present.y + present.height/2 - 3, present.width, 6);
-            
-            // Laço
-            ctx.beginPath();
-            ctx.arc(present.x + present.width/2, present.y, 6, 0, Math.PI * 2);
-            ctx.fill();
-        }
-    }
-    
-    // Adicionar evento de clique na árvore
-    canvas.addEventListener('click', function(event) {
-        const rect = canvas.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
-        
-        // Verificar clique na estrela
-        if (starPosition) {
-            const distance = Math.sqrt(
-                Math.pow(x - starPosition.cx, 2) + 
-                Math.pow(y - starPosition.cy, 2)
-            );
-            
-            if (distance < starPosition.radius && !starClicked) {
-                starClicked = true;
-                revealSecretMessage();
-                return;
-            }
-        }
-        
-        // Adicionar enfeite onde clicar
-        const centerX = canvas.width * config.tree.x;
-        const baseY = canvas.height * config.tree.y;
-        const treeHeight = config.tree.size;
-        const treeWidth = treeHeight * 0.6;
-        
-        const inTreeArea = (
-            y < baseY && 
-            y > baseY - treeHeight && 
-            x > centerX - treeWidth/2 && 
-            x < centerX + treeWidth/2
-        );
-        
-        if (inTreeArea) {
-            const color = config.lights.colors[Math.floor(Math.random() * config.lights.colors.length)].hex;
-            ornaments.push({
-                x: x,
-                y: y,
-                radius: 8 + Math.random() * 6,
-                color: color
-            });
-            
-            window.drawTree();
-            playOrnamentSound();
-            
-            mostrarMensagemTemporaria('🎁 Enfeite adicionado!');
-        }
-    });
-    
-    // Desenhar árvore inicial
-    window.drawTree();
 }
 
 // =============== ÁRVORE DE NATAL ===============
@@ -1202,13 +1236,6 @@ window.addEventListener('load', function() {
         const luzes = document.querySelectorAll('.luz-natal');
         console.log(`💡 Luzes criadas: ${luzes.length}`);
         
-        // Mostrar posições das luzes para debug
-        luzes.forEach((luz, i) => {
-            const left = luz.style.left;
-            const top = luz.style.top;
-            console.log(`   Luz ${i}: left=${left}, top=${top}`);
-        });
-        
         if (luzes.length === 0) {
             console.log('🔄 Recriando luzes...');
             initLuzes();
@@ -1217,6 +1244,7 @@ window.addEventListener('load', function() {
     
     console.log('%c🎄 FELIZ NATAL! ❤️', 'color: #FFD700; font-size: 20px; font-weight: bold;');
     console.log('%cCartão de Natal Interativo', 'color: #00CED1; font-size: 14px;');
+    console.log('%c📸 Álbum com 4 fotos carregado!', 'color: #FF69B4; font-size: 14px;');
 });
 
 // Parar animação ao sair

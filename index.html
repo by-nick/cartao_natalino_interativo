@@ -43,6 +43,41 @@
                 </div>
             </div>
 
+            <!-- Seção de Jogos -->
+            <div class="jogos-section">
+                <h2><i class="fas fa-gamepad"></i> Jogos Natalinos</h2>
+                
+                <!-- Jogo 1: Encontre os Presentes -->
+                <div class="jogo-card" id="jogoPresentes">
+                    <h3><i class="fas fa-search"></i> Encontre os Presentes Escondidos</h3>
+                    <p>Clique nos presentes escondidos na tela!</p>
+                    <div class="jogo-info">
+                        <div class="contador-jogo">
+                            <span id="contadorPresentes">0</span>/3 encontrados
+                        </div>
+                        <button id="iniciarJogoPresentes" class="btn-jogo">
+                            <i class="fas fa-play"></i> Iniciar Jogo
+                        </button>
+                    </div>
+                    <div id="areaJogo"></div>
+                </div>
+
+                <!-- Jogo 2: Memória Natalina -->
+                <div class="jogo-card" id="jogoMemoria">
+                    <h3><i class="fas fa-brain"></i> Jogo da Memória</h3>
+                    <p>Encontre os pares de cartas iguais!</p>
+                    <div class="jogo-info">
+                        <div class="contador-jogo">
+                            <span id="pontosMemoria">0</span> pontos
+                        </div>
+                        <button id="iniciarJogoMemoria" class="btn-jogo">
+                            <i class="fas fa-redo"></i> Jogar Novamente
+                        </button>
+                    </div>
+                    <div class="jogo-memoria-container" id="memoriaContainer"></div>
+                </div>
+            </div>
+
             <!-- Mensagens -->
             <div class="messages">
                 <div class="message-card" id="message1">
@@ -116,21 +151,59 @@
             </div>
         </footer>
 
-        <!-- Botão para Foto Especial -->
+        <!-- Botão para Álbum de Fotos -->
         <button id="fotoBtn" class="foto-btn">
-            <i class="fas fa-camera"></i> Nossa Foto Especial
+            <i class="fas fa-camera"></i> Nosso Álbum de Fotos
         </button>
     </div>
 
-    <!-- Popup da Foto Especial -->
+    <!-- Popup do Álbum de Fotos -->
     <div id="fotoPopup" class="foto-popup hidden">
         <div class="foto-content">
             <button id="fecharFotoBtn" class="fechar-popup-btn">
                 <i class="fas fa-times"></i>
             </button>
-            <h2>📸 Nossa Foto Especial! ❤️</h2>
-            <img src="itens_importantes/nossa-foto.jpg" alt="Nossa foto" id="fotoImagem">
-            <p>Para o amor da minha vida!<br>Cada momento com você é especial.<br>Te amo mais que tudo! 🥰</p>
+            <h2>📸 Nosso Álbum Especial! ❤️</h2>
+            
+            <!-- Controles do Álbum -->
+            <div class="controles-album">
+                <button id="prevFoto" class="btn-album">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="contador-fotos">
+                    <span id="fotoAtual">1</span>/<span id="totalFotos">3</span>
+                </div>
+                <button id="nextFoto" class="btn-album">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <!-- Imagem do Álbum -->
+            <div class="album-container">
+                <img src="itens_importantes/nossa-foto.jpg" alt="Nossa foto" id="fotoImagem" class="foto-album">
+                <div class="descricao-foto" id="descricaoFoto">
+                    Nossa primeira foto especial juntos! ❤️
+                </div>
+            </div>
+            
+            <!-- Miniaturas -->
+            <div class="miniatura-container">
+                <div class="miniatura active" data-index="0">
+                    <img src="itens_importantes/nossa-foto.jpg" alt="Miniatura 1">
+                </div>
+                <div class="miniatura" data-index="1">
+                    <img src="itens_importantes/foto2.jpeg" alt="Miniatura 2">
+                </div>
+                <div class="miniatura" data-index="2">
+                    <img src="itens_importantes/foto3.jpeg" alt="Miniatura 3">
+                </div>
+                <div class="miniatura" data-index="3">
+                    <img src="itens_importantes/foto4.jpeg" alt="Miniatura 4">
+                </div>
+            
+            </div>
+            
+            <p id="legendaFoto">Cada momento com você é especial. Te amo mais que tudo! 🥰</p>
             <button id="closePhotoBtn" class="btn-fechar">Fechar ❤️</button>
         </div>
     </div>
